@@ -1,18 +1,11 @@
-# Seamonsters Robot Code Template
+# Seamonsters Code Development
 
-Template for robot code.
+This repository is meant for robot code that is not tied to a specifiec year.
 
-Deploy with `./deploy.sh` or `.\deploy.bat` (Windows). Test with `./test.sh` or
-`.\test.bat` (Windows).
+SeamonstersDev is forked from SeamonstersTemplate. SeamonstersTemplate is an upstream source. To merge any changes from SeamonstersTemplate, do:
 
-## Directory Structure
+```
+git fetch upstream
+git merge upstream/master
+```
 
-- `seamonsters/`: The seamonsters library code. It has its own documentation, in
-    `seamonsters/docs/_build/html/index.html` (you can view it online
-    [here](https://rawgit.com/Seamonsters-2605/SeamonstersTemplate/master/seamonsters/docs/_build/html/index.html))
-- `tests/`: Created and used by pyfrc for tests.
-- `deploy.bat` and `deploy.sh`: Windows and *nix versions of scripts for
-    deploying code to robot.
-- `fastdeploy.bat` and `fastdeploy.sh`: Deploy code without testing it.
-- `test.bat` and `test.sh`: Scripts for testing robot code without needing an
-    actual robot to deploy to.
