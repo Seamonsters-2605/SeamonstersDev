@@ -22,10 +22,6 @@ class SwerveBot(DriveTest):
         fr.setFeedbackDevice(wpilib.CANTalon.FeedbackDevice.QuadEncoder)
         bl.setFeedbackDevice(wpilib.CANTalon.FeedbackDevice.QuadEncoder)
         br.setFeedbackDevice(wpilib.CANTalon.FeedbackDevice.QuadEncoder)
-        fl.setPID(1.0, 0.0, 3.0, 0.0)
-        fr.setPID(1.0, 0.0, 3.0, 0.0)
-        bl.setPID(1.0, 0.0, 3.0, 0.0)
-        br.setPID(1.0, 0.0, 3.0, 0.0)
         
         # 4156 ticks per wheel rotation
         # encoder has 100 raw ticks -- with a QuadEncoder that makes 400 ticks
@@ -39,7 +35,10 @@ class SwerveBot(DriveTest):
         filterDrive = AccelerationFilterDrive(drive)
         
         DriveTest.initDrive(self, filterDrive,
-                            driveMode=DriveInterface.DriveMode.POSITION)
+                            driveMode=DriveInterface.DriveMode.POSITION,
+                            talons=[fl, fr, bl, br],
+                            normalPID=(10.0, 0.0, 3.0, 0.0),
+                            slowPID=(30.0, 0.0, 3.0, 0.0) )
         
         
 if __name__ == "__main__":
