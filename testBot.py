@@ -16,8 +16,8 @@ class Test(wpilib.IterativeRobot):
         #wpilib.SmartDashboard.putString("thisIsAKey", "this is a value!")
         
     def teleopPeriodic(self):
-        self.yawLog.update(ahrs.getYaw())
-        self.angleLog.update(ahrs.getAngle())
+        self.yawLog.update(self.ahrs.getYaw())
+        self.angleLog.update(self.ahrs.getAngle())
         
 if __name__ == "__main__":
     wpilib.run(Test)
