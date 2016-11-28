@@ -2,7 +2,9 @@
 
 This repository is meant for robot code that is not tied to a specifiec year.
 
-SeamonstersDev is forked from SeamonstersTemplate. SeamonstersTemplate is an upstream source. To merge any changes from SeamonstersTemplate, do:
+SeamonstersDev is forked from SeamonstersTemplate. SeamonstersTemplate should be added as an upstream source - to do this, do `git remote add upstream https://github.com/Seamonsters-2605/SeamonstersTemplate`.
+
+Then, to merge any changes from SeamonstersTemplate, do:
 
 ```
 git fetch upstream
