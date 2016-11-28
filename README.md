@@ -19,4 +19,4 @@ Not including anything from SeamonstersTemplate.
 - `holoBot.py`: Simple bot used for testing holonomic drives.
 - `bTest.py`: Very simple bot that spins a single motor - used for testing
     Blender simulation.
-
+- `robotSimTest.py`: Used for testing pyfrc robot simulation. See `sim/README` for details.
