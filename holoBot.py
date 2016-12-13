@@ -4,8 +4,10 @@ from seamonsters.wpilib_sim import simulate
 from seamonsters.utilityBots.driveTest import DriveTest
 from seamonsters.drive import DriveInterface
 from seamonsters.drive import AccelerationFilterDrive
+from seamonsters.drive import FieldOrientedDrive
 from seamonsters.holonomicDrive import HolonomicDrive
 import wpilib
+from robotpy_ext.common_drivers.navx import AHRS
 import math
 
 class SwerveBot(DriveTest):
@@ -33,12 +35,19 @@ class SwerveBot(DriveTest):
         drive.setWheelOffset(math.radians(22.5)) #angle of rollers
         
         filterDrive = AccelerationFilterDrive(drive)
+
+        self.ahrs = AHRS.create_spi() # the NavX
+        fieldDrive = FieldOrientedDrive(filterDrive, self.ahrs)
         
-        DriveTest.initDrive(self, filterDrive,
+        DriveTest.initDrive(self, fieldDrive,
                             driveMode=DriveInterface.DriveMode.POSITION,
                             talons=[fl, fr, bl, br],
                             normalPID=(10.0, 0.0, 3.0, 0.0),
                             slowPID=(30.0, 0.0, 3.0, 0.0) )
+
+    def teleopPeriodic(self):
+        super().teleopPeriodic()
+        print(self.ahrs.getYaw())
         
         
 if __name__ == "__main__":
