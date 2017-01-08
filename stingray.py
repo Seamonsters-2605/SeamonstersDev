@@ -1,7 +1,8 @@
 __author__ = "jacobvanthoog"
 
-from seamonsters.wpilib_sim import simulate
 import wpilib
+import seamonsters.fix2017
+from seamonsters.wpilib_sim import simulate
 from seamonsters.modularRobot import Module
 from stingray.drive import StingrayDrive
 from stingray.shooter import StingrayShooter

@@ -1,12 +1,14 @@
 __author__ = "jacobvanthoog"
 
+import wpilib
+import seamonsters.fix2017
 from seamonsters.wpilib_sim import simulate
 from seamonsters.utilityBots.driveTest import DriveTest
 from seamonsters.drive import DriveInterface
 from seamonsters.drive import AccelerationFilterDrive
 from seamonsters.drive import FieldOrientedDrive
 from seamonsters.holonomicDrive import HolonomicDrive
-import wpilib
+
 from robotpy_ext.common_drivers.navx import AHRS
 import math
 

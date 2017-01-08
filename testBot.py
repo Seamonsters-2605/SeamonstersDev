@@ -1,6 +1,7 @@
 __author__ = "jacobvanthoog"
 
 import wpilib
+import seamonsters.fix2017
 from robotpy_ext.common_drivers.navx import AHRS
 from seamonsters.logging import LogState
 

@@ -1,6 +1,7 @@
 __author__ = "jacobvanthoog"
 
 import wpilib
+import seamonsters.fix2017
 
 # Based off the example robot from
 # github.com/robotpy/pyfrc/blob/master/samples/physics-mecanum/src/robot.py
