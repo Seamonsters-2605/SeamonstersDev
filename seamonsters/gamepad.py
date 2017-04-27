@@ -4,6 +4,14 @@ import wpilib
 import math
 import seamonsters.joystick
 
+gamepads = { }
+
+def globalGamepad(port):
+    global gamepads
+    if not port in gamepads:
+        gamepads[port] = Gamepad(port)
+    return gamepads[port]
+
 class Gamepad(seamonsters.joystick.JoystickBase):
     """
     An extended Joystick specifically designed for Logitech gamepads. Like
@@ -108,7 +116,7 @@ class Gamepad(seamonsters.joystick.JoystickBase):
 
     def getLY(self, enableDeadZone = True):
         """
-        Get the x-axis of the left joystick. The dead zone is enabled by
+        Get the y-axis of the left joystick. The dead zone is enabled by
         default; set enableDeadZone to False to disable it.
         """
         if self.lInDeadZone() and enableDeadZone:
@@ -126,7 +134,7 @@ class Gamepad(seamonsters.joystick.JoystickBase):
 
     def getRX(self, enableDeadZone = True):
         """
-        Get the y-axis of the right joystick. The dead zone is enabled by
+        Get the x-axis of the right joystick. The dead zone is enabled by
         default; set enableDeadZone to False to disable it.
         """
         if self.rInDeadZone() and enableDeadZone:

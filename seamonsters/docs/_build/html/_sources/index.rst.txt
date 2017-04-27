@@ -22,11 +22,11 @@ Modules:
 
 .. toctree::
    :maxdepth: 2
-   
+
+   commands
    dashboard
    drive
    gamepad
-   grip
    holonomicDrive
    joystick
    logging

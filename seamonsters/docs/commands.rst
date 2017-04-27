@@ -1,7 +1,7 @@
-seamonsters.grip
-================
+seamonsters.commands
+====================
 
-.. automodule:: seamonsters.grip
+.. automodule:: seamonsters.commands
     :members:
     :special-members: __init__
     :undoc-members:
