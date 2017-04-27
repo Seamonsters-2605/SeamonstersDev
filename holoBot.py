@@ -1,7 +1,7 @@
 __author__ = "jacobvanthoog"
 
 import wpilib
-import seamonsters.fix2017
+import ctre
 from seamonsters.wpilib_sim import simulate
 from seamonsters.utilityBots.driveTest import DriveTest
 from seamonsters.drive import DriveInterface
@@ -18,14 +18,14 @@ class SwerveBot(DriveTest):
         DriveTest.robotInit(self, normalScale = .3, fastScale = .5,
                             slowScale = .05)
         
-        fl = wpilib.CANTalon(2)
-        fr = wpilib.CANTalon(1)
-        bl = wpilib.CANTalon(0)
-        br = wpilib.CANTalon(3)
-        fl.setFeedbackDevice(wpilib.CANTalon.FeedbackDevice.QuadEncoder)
-        fr.setFeedbackDevice(wpilib.CANTalon.FeedbackDevice.QuadEncoder)
-        bl.setFeedbackDevice(wpilib.CANTalon.FeedbackDevice.QuadEncoder)
-        br.setFeedbackDevice(wpilib.CANTalon.FeedbackDevice.QuadEncoder)
+        fl = ctre.CANTalon(2)
+        fr = ctre.CANTalon(1)
+        bl = ctre.CANTalon(0)
+        br = ctre.CANTalon(3)
+        fl.setFeedbackDevice(ctre.CANTalon.FeedbackDevice.QuadEncoder)
+        fr.setFeedbackDevice(ctre.CANTalon.FeedbackDevice.QuadEncoder)
+        bl.setFeedbackDevice(ctre.CANTalon.FeedbackDevice.QuadEncoder)
+        br.setFeedbackDevice(ctre.CANTalon.FeedbackDevice.QuadEncoder)
         
         # 4156 ticks per wheel rotation
         # encoder has 100 raw ticks -- with a QuadEncoder that makes 400 ticks

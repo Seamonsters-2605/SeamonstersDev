@@ -1,7 +1,7 @@
 __author__ = "jacobvanthoog"
 
 import wpilib
-import seamonsters.fix2017
+import ctre
 
 # Based off the example robot from
 # github.com/robotpy/pyfrc/blob/master/samples/physics-mecanum/src/robot.py
@@ -12,10 +12,10 @@ class MyRobot(wpilib.IterativeRobot):
         self.lJoy = wpilib.Joystick(0)
         self.rJoy = wpilib.Joystick(1)
         
-        self.FL = wpilib.CANTalon(2)
-        self.FR = wpilib.CANTalon(1)
-        self.BL = wpilib.CANTalon(0)
-        self.BR = wpilib.CANTalon(3)
+        self.FL = ctre.CANTalon(2)
+        self.FR = ctre.CANTalon(1)
+        self.BL = ctre.CANTalon(0)
+        self.BR = ctre.CANTalon(3)
         
         # Position gets automatically updated as robot moves
         self.gyro = wpilib.AnalogGyro(1)
