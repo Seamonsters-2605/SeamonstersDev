@@ -17,6 +17,6 @@ Not including anything from SeamonstersTemplate.
 - `CommandsAndSubsystems.md`: Our notes on pyfrc Commands and Subsystems.
 - `stingray.py`: Project Stingray robot code.
 - `stingray/`: Modules for the Project Stingray bot.
-- `testBot.py`: Robot that is modified for testing various things.
-- `holoBot.py`: Simple bot used for testing holonomic drives.
+- `ahrsDemo.py`: NavX demo.d 
+- `holoBot.py`: Holonomic drive for the demo bot.
 - `robotSimTest.py`: Used for testing pyfrc robot simulation. See `sim/README` for details.
