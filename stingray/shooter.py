@@ -1,24 +1,26 @@
 __author__ = "jacobvanthoog"
 
 from seamonsters.wpilib_sim import simulate
+from seamonsters.modularRobot import Module
 from seamonsters.gamepad import Gamepad
 from seamonsters.logging import LogState
 import wpilib
+import ctre
 
-class StingrayShooter(wpilib.IterativeRobot):
+class StingrayShooter(Module):
     
     def robotInit(self):
         self.gamepad = Gamepad(1)
         
-        self.LeftFly = wpilib.CANTalon(4)
-        self.RightFly = wpilib.CANTalon(5)
+        self.LeftFly = ctre.CANTalon(4)
+        self.RightFly = ctre.CANTalon(5)
         self.LeftFly.setPID(1, 0.0009, 1, 0.0)
         self.RightFly.setPID(1, 0.0009, 1, 0.0)
-        self.LeftFly.changeControlMode(wpilib.CANTalon.ControlMode.PercentVbus)
-        self.RightFly.changeControlMode(wpilib.CANTalon.ControlMode.PercentVbus)
+        self.LeftFly.changeControlMode(ctre.CANTalon.ControlMode.PercentVbus)
+        self.RightFly.changeControlMode(ctre.CANTalon.ControlMode.PercentVbus)
         
-        self.Intake = wpilib.CANTalon(8)
-        self.Intake.changeControlMode(wpilib.CANTalon.ControlMode.PercentVbus)
+        self.Intake = ctre.CANTalon(8)
+        self.Intake.changeControlMode(ctre.CANTalon.ControlMode.PercentVbus)
 
         self.motorSpeed = 0
         self.hold = False

@@ -1,7 +1,6 @@
 __author__ = "jacobvanthoog"
 
 import wpilib
-import seamonsters.fix2017
 from seamonsters.wpilib_sim import simulate
 from seamonsters.modularRobot import Module
 from stingray.drive import StingrayDrive
@@ -11,8 +10,8 @@ class StingrayBot(Module):
     
     def __init__(self):
         super().__init__()
-        self.addModule(StingrayDrive())
-        self.addModule(StingrayShooter())
+        self.addModule(StingrayDrive(initSuper=False))
+        self.addModule(StingrayShooter(initSuper=False))
         
 if __name__ == "__main__":
     wpilib.run(StingrayBot)

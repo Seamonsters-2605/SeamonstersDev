@@ -6,6 +6,7 @@ from seamonsters.drive import DriveInterface
 from seamonsters.drive import AccelerationFilterDrive
 from seamonsters.swerveDrive import SwerveDrive
 import wpilib
+import ctre
 
 class StingrayDrive(DriveTest):
     
@@ -13,24 +14,24 @@ class StingrayDrive(DriveTest):
         super().robotInit()
         
         # Front Left wheel
-        flDrive = wpilib.CANTalon(0)
-        flDrive.setFeedbackDevice(wpilib.CANTalon.FeedbackDevice.QuadEncoder)
+        flDrive = ctre.CANTalon(0)
+        flDrive.setFeedbackDevice(ctre.CANTalon.FeedbackDevice.QuadEncoder)
         flDrive.setPID(1.0, 0.0, 3.0, 0.0)
         
-        flRotate = wpilib.CANTalon(1)
+        flRotate = ctre.CANTalon(1)
         flRotate.reverseOutput(True)
-        flRotate.setFeedbackDevice(wpilib.CANTalon.FeedbackDevice.QuadEncoder)
+        flRotate.setFeedbackDevice(ctre.CANTalon.FeedbackDevice.QuadEncoder)
         flRotate.setPID(1.0, 0.0, 3.0, 0.0)
         
         
         # Back Right wheel
-        brDrive = wpilib.CANTalon(2)
-        brDrive.setFeedbackDevice(wpilib.CANTalon.FeedbackDevice.QuadEncoder)
+        brDrive = ctre.CANTalon(2)
+        brDrive.setFeedbackDevice(ctre.CANTalon.FeedbackDevice.QuadEncoder)
         brDrive.setPID(1.0, 0.0, 3.0, 0.0)
         
-        brRotate = wpilib.CANTalon(3)
+        brRotate = ctre.CANTalon(3)
         brRotate.reverseOutput(True)
-        brRotate.setFeedbackDevice(wpilib.CANTalon.FeedbackDevice.QuadEncoder)
+        brRotate.setFeedbackDevice(ctre.CANTalon.FeedbackDevice.QuadEncoder)
         brRotate.setPID(1.0, 0.0, 3.0, 0.0)
         
         # Drive controller
