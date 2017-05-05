@@ -62,8 +62,14 @@ class Flywheels:
 
     def __init__(self):
         self.flywheelMotors = [ctre.CANTalon(5), ctre.CANTalon(6)]
+
+        #self.speedVoltage = 1.0
+
         self.speedVoltage = .76
         self.speedSpeed = 21000
+
+        #self.speedVoltage = .5
+        #self.speedSpeed = 13816
 
         # encoder resolution is 512 (* 4)
         for motor in self.flywheelMotors:
