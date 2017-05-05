@@ -3,7 +3,7 @@ __author__ = "seamonsters"
 import wpilib
 import ctre
 from seamonsters.wpilib_sim import simulate
-
+from seamonsters.modularRobot import Module
 from seamonsters.gamepad import Gamepad
 import seamonsters.gamepad
 from seamonsters.drive import DriveInterface
@@ -17,7 +17,7 @@ from seamonsters import dashboard
 from robotpy_ext.common_drivers.navx import AHRS
 import math
 
-class DriveBot(wpilib.IterativeRobot):
+class DriveBot(Module):
 
     def robotInit(self):
         ### CONSTANTS ###

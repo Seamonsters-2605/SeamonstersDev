@@ -1,3 +1,4 @@
 -Field oriented drive
 -Drive voltage mode
 -Encoder logging
++Flywheel voltage mode
