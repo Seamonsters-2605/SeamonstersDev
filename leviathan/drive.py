@@ -13,6 +13,7 @@ from seamonsters.drive import DynamicPIDDrive
 from seamonsters.holonomicDrive import HolonomicDrive
 from seamonsters.logging import LogState
 from seamonsters import dashboard
+import vision
 
 from robotpy_ext.common_drivers.navx import AHRS
 import math
@@ -108,6 +109,45 @@ class DriveBot(Module):
 
         if self.pdp.getVoltage() < 12:
             print("Battery Level below 12 volts!!!")
+
+    def autonomousInit(self):
+        self.vision = vision.Vision()
+        self.turnAlignLog = LogState("Turn align")
+        self.targetWidthLog = LogState("Target width")
+
+        self.currentDistance = 0
+
+        if dashboard.getSwitch("Drive voltage mode", False):
+            self.holoDrive.setDriveMode(DriveInterface.DriveMode.VOLTAGE)
+        else:
+            self.holoDrive.setDriveMode(DriveInterface.DriveMode.POSITION)
+
+    def autonomousPeriodic(self):
+        contours = self.vision.getContours()
+        targetCenter = vision.Vision.targetCenter(contours)
+        targetDimensions = vision.Vision.targetDimensions(contours)
+        if targetCenter == None or targetDimensions == None:
+            print("No vision!!")
+            self.filterDrive.drive(0, 0, 0)
+            return
+
+        targetX = float(targetCenter[0]) / float(vision.Vision.WIDTH)
+        centerDistance = targetX - vision.Vision.CENTER
+        self.turnAlignLog.update("{0:.5f}".format(centerDistance))
+        turnAmount = centerDistance * abs(centerDistance) * 0.7
+
+        targetWidth = float(targetDimensions[0]) / float(vision.Vision.WIDTH)
+        self.targetWidthLog.update("{0:.5f}".format(targetWidth))
+        distance = 0.55 - targetWidth
+        self.currentDistance += (distance - self.currentDistance) / 3
+        driveSpeed = self.currentDistance * abs(self.currentDistance) * 1.5
+
+        if driveSpeed > 0.25:
+            driveSpeed = 0.25
+        if driveSpeed < -0.2:
+            driveSpeed = -0.2
+
+        self.filterDrive.drive(driveSpeed, math.pi/2, -turnAmount)
 
     def teleopInit(self):
         print("DRIVE GAMEPAD:")
