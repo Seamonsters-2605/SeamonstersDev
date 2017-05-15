@@ -176,6 +176,15 @@ class DriveBot(Module):
         else:
             self.holoDrive.setDriveMode(DriveInterface.DriveMode.POSITION)
 
+        if dashboard.getSwitch("Slow driving", False):
+            self.normalScale = 0.2
+            self.fastScale = 0.4
+            self.slowScale = 0.07
+            self.maxScale = 0.4
+            self.normalTurnScale = 0.2
+            self.fastTurnScale = 0.3
+            self.maxTurnScale = 0.3
+
         self.wheelsLocked = False
 
         self.encoderLoggingEnabled = dashboard.getSwitch("Encoder logging",
