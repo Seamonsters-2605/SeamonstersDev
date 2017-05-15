@@ -24,7 +24,7 @@ class Climber(Module):
             self.climberMotor.changeControlMode(ctre.CANTalon.ControlMode.PercentVbus)
 
     def robotInit(self):
-        self.secondaryGamepad = seamonsters.gamepad.globalGamepad(port = 1)
+        self.gamepad = seamonsters.gamepad.globalGamepad(port = 0)
 
         self.climberMotor = ctre.CANTalon(4)
 
@@ -35,11 +35,12 @@ class Climber(Module):
         self.encoderLog = None
 
     def teleopInit(self):
-        print("SPECIAL GAMEPAD:")
-        print("  Left Joystick: Spin climber")
-        print("  Right Joystick: Slow mode (lock mode only)")
-        print("  A: Lock motor")
-        print("  Right Joystick Button: Unlock motor")
+        print("  Right trigger: Climb up")
+        print("  Left trigger: Climb down")
+        print("  Right bumper: Climb up slowly (lock mode only)")
+        print("  Left bumper: Climb down slowly")
+        print("  B: Lock motor")
+        print("  X: Unlock motor")
         self.locked = False
         self.lockmode = False
         self.enabled = True
@@ -47,12 +48,12 @@ class Climber(Module):
         self.climberMotor.changeControlMode(ctre.CANTalon.ControlMode.PercentVbus)
 
     def teleopPeriodic(self):
-        if self.secondaryGamepad.getRawButton(Gamepad.A):
+        if self.gamepad.getRawButton(Gamepad.B):
             if not self.lockmode:
                 self.lockmode = True
                 #When the A button is pressed the motor locks, so the robot wont fall down the rope
 
-        if self.secondaryGamepad.getRawButton(Gamepad.RJ):
+        if self.gamepad.getRawButton(Gamepad.X):
             if self.lockmode:
                 self.lockmode = False
             self.enabled = True
@@ -66,14 +67,20 @@ class Climber(Module):
         else:
             self.lockLog.update("Off")
 
-        if self.secondaryGamepad.getLY()==0 and self.lockmode:
+        climbSpeed = self.gamepad.getRTrigger() - self.gamepad.getLTrigger()
+        if abs(climbSpeed) < 0.05:
+            climbSpeed = 0
+        if climbSpeed == 0 and self.lockmode:
             self.lock()
             if self.enabled:
                 self.statusLog.update("Locked!")
-                self.lockPosition += self.secondaryGamepad.getRY() * 1500
+                if self.gamepad.getRawButton(Gamepad.RT):
+                    self.lockPosition += 1500
+                elif self.gamepad.getRawButton(Gamepad.LT):
+                    self.lockPosition -= 1500
         elif self.enabled:
             self.unlock()
-            self.climberMotor.set(self.secondaryGamepad.getLY())
+            self.climberMotor.set(climbSpeed)
             self.statusLog.update("Unlocked")
 
         self.currentLog.update(self.climberMotor.getOutputCurrent())
