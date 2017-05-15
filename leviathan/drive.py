@@ -156,19 +156,13 @@ class DriveBot(Module):
         print("  Left Trigger: Slower")
         print("  Right Trigger: Faster")
         print("  Left Joystick Button: Max Speed!")
-        print("  Dpad: Move in small increments")
         print("  A: Brake")
-        print("  B: Enable field oriented")
-        print("  X: Disable field oriented")
         print("  Y: Shake")
         print("  Start: Position Mode")
         print("  Back: Voltage mode")
 
         self.holoDrive.zeroEncoderTargets()
         self.holoDrive.setMaxVelocity(self.maxVelocity)
-        self.dPadCount = 1000
-        # booleans for DPad steering
-        self.dPadDirection = 0
         self.count = 0
 
         self.teleopCommand = None
@@ -230,10 +224,6 @@ class DriveBot(Module):
         else:
             self.wheelsLocked = False
 
-        if self.driverGamepad.getRawButton(Gamepad.B):
-            self.drive = self.fieldDrive  # field oriented on
-        if self.driverGamepad.getRawButton(Gamepad.X):
-            self.drive = self.filterDrive  # field oriented off
         if self.driverGamepad.getRawButton(Gamepad.RB) \
                 and self.driverGamepad.getRawButton(Gamepad.LB):
             print("Zero field oriented.")
@@ -265,31 +255,6 @@ class DriveBot(Module):
         direction = self.driverGamepad.getLDirection()
 
         accelFilter = True
-
-        # check if DPad is pressed
-
-        pov = self.driverGamepad.getPOV()
-        if pov != -1:
-            self.dPadDirection = -math.radians(
-                self.driverGamepad.getPOV() - 90.0)
-            self.dPadCount = 0
-
-        if (self.dPadCount < 10):
-            magnitude = 0.1
-            direction = self.dPadDirection
-            self.dPadCount += 1
-            accelFilter = False
-
-        # constrain direction to be between 0 and 2pi
-        if direction < 0:
-            circles = math.ceil(-direction / (math.pi * 2))
-            direction += circles * math.pi * 2
-        direction %= math.pi * 2
-        direction = self.roundDirection(direction, 0)
-        direction = self.roundDirection(direction, math.pi / 2.0)
-        direction = self.roundDirection(direction, math.pi)
-        direction = self.roundDirection(direction, 3.0 * math.pi / 2.0)
-        direction = self.roundDirection(direction, math.pi * 2)
 
         if self.driverGamepad.getRawButton(Gamepad.Y):
             magnitude = 1
