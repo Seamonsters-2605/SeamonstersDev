@@ -12,15 +12,13 @@ from seamonsters import dashboard
 class Shooter (Module):
     
     def robotInit(self):
-        self.secondaryGamepad = seamonsters.gamepad.globalGamepad(port=1)
+        self.gamepad = seamonsters.gamepad.globalGamepad(port=0)
 
     def teleopInit(self):
         print("  Dpad up: Spin flywheel")
         print("  Dpad down: Reverse flywheel")
-        print("  Right Trigger: Feeder forwards")
-        print("  Left Trigger: Feeder backwards")
-        print("  Start: Flywheel speed mode")
-        print("  Back: Flywheel voltage mode")
+        print("  Dpad right: Feeder forwards")
+        print("  Dpad left: Feeder backwards")
 
         if dashboard.getSwitch("Flywheel voltage mode", True):
             self.ballControl.getFlywheels().switchVoltageMode()
@@ -28,20 +26,19 @@ class Shooter (Module):
             self.ballControl.getFlywheels().switchSpeedMode()
 
     def teleopPeriodic(self):
-        if self.secondaryGamepad.getRawButton(Gamepad.UP):
+        if self.gamepad.getRawButton(Gamepad.UP):
             self.ballControl.getFlywheels().spinFlywheels()
-        elif self.secondaryGamepad.getRawButton(Gamepad.DOWN):
+        elif self.gamepad.getRawButton(Gamepad.DOWN):
             self.ballControl.getFlywheels().reverseFlywheels()
         else:
             self.ballControl.getFlywheels().stopFlywheels()
 
-        if self.secondaryGamepad.getRawButton(Gamepad.START):
-            self.ballControl.getFlywheels().switchSpeedMode()
-        elif self.secondaryGamepad.getRawButton(Gamepad.BACK):
-            self.ballControl.getFlywheels().switchVoltageMode()
-
-        self.ballControl.feed(self.secondaryGamepad.getRTrigger() -
-                              self.secondaryGamepad.getLTrigger())
+        if self.gamepad.getRawButton(Gamepad.RIGHT):
+            self.ballControl.feed(1.0)
+        elif self.gamepad.getRawButton(Gamepad.LEFT):
+            self.ballControl.feed(-1.0)
+        else:
+            self.ballControl.feed(0.0)
 
     def setBallControl(self, ballControl):
         self.ballControl = ballControl
