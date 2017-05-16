@@ -74,9 +74,9 @@ class Climber(Module):
             self.lock()
             if self.enabled:
                 self.statusLog.update("Locked!")
-                if self.gamepad.getRawButton(Gamepad.RT):
+                if self.gamepad.getRawButton(Gamepad.RB):
                     self.lockPosition += 1500
-                elif self.gamepad.getRawButton(Gamepad.LT):
+                elif self.gamepad.getRawButton(Gamepad.LB):
                     self.lockPosition -= 1500
         elif self.enabled:
             self.unlock()
