@@ -23,21 +23,6 @@ class DriveBot(Module):
     def robotInit(self):
         ### CONSTANTS ###
 
-        # normal speed scale, out of 1:
-        self.normalScale = 0.37
-        # speed scale when fast button is pressed:
-        self.fastScale = 1.0
-        # speed scale when slow button is pressed:
-        self.slowScale = 0.07
-        # speed scale when max speed button is pressed
-        self.maxScale = 1.0
-        # normal turning speed scale:
-        self.normalTurnScale = 0.25
-        # turning speed scale when fast button is pressed
-        self.fastTurnScale = 0.34
-        # turning speed scale when max speed button is pressed
-        self.maxTurnScale = 1.0
-
         self.joystickExponent = 2
         self.fastJoystickExponent = .5
         self.slowJoystickExponent = 4
@@ -184,6 +169,21 @@ class DriveBot(Module):
             self.normalTurnScale = 0.2
             self.fastTurnScale = 0.3
             self.maxTurnScale = 0.3
+        else:
+            # normal speed scale, out of 1:
+            self.normalScale = 0.37
+            # speed scale when fast button is pressed:
+            self.fastScale = 1.0
+            # speed scale when slow button is pressed:
+            self.slowScale = 0.07
+            # speed scale when max speed button is pressed
+            self.maxScale = 1.0
+            # normal turning speed scale:
+            self.normalTurnScale = 0.25
+            # turning speed scale when fast button is pressed
+            self.fastTurnScale = 0.34
+            # turning speed scale when max speed button is pressed
+            self.maxTurnScale = 1.0
 
         self.wheelsLocked = False
 
