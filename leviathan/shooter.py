@@ -26,10 +26,12 @@ class Shooter (Module):
             self.ballControl.getFlywheels().switchSpeedMode()
 
     def teleopPeriodic(self):
-        if self.gamepad.getRawButton(Gamepad.UP):
-            self.ballControl.getFlywheels().spinFlywheels()
-        elif self.gamepad.getRawButton(Gamepad.DOWN):
+        if self.gamepad.getRawButton(Gamepad.DOWN):
             self.ballControl.getFlywheels().reverseFlywheels()
+        elif self.gamepad.getRawButton(Gamepad.UP) \
+                or self.gamepad.getRawButton(Gamepad.RIGHT) \
+                or self.gamepad.getRawButton(Gamepad.LEFT):
+            self.ballControl.getFlywheels().spinFlywheels()
         else:
             self.ballControl.getFlywheels().stopFlywheels()
 
@@ -60,20 +62,15 @@ class Flywheels:
     def __init__(self):
         self.flywheelMotors = [ctre.CANTalon(5), ctre.CANTalon(6)]
 
-        #self.speedVoltage = 1.0
+        self.speedVoltage = .5
 
-        self.speedVoltage = .76
-        self.speedSpeed = 21000
-
-        #self.speedVoltage = .5
-        #self.speedSpeed = 13816
+        self.speedSpeed = 27632 * self.speedVoltage
 
         # encoder resolution is 512 (* 4)
         for motor in self.flywheelMotors:
             motor.setPID(0.15, 0.0, 5.0, 0)
             motor.setFeedbackDevice(ctre.CANTalon.FeedbackDevice.QuadEncoder)
 
-        self.switchSpeedMode()
         for motor in self.flywheelMotors:
             motor.changeControlMode(ctre.CANTalon.ControlMode.PercentVbus)
         self.talonSpeedModeEnabled = False
