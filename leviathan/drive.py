@@ -138,9 +138,8 @@ class DriveBot(Module):
         print("DRIVE GAMEPAD:")
         print("  Left Joystick: Strafe/Drive")
         print("  Right Joystick: Turn")
-        print("  Left Trigger: Slower")
-        print("  Right Trigger: Faster")
-        print("  Left Joystick Button: Max Speed!")
+        print("  Left Joystick Button: Slower")
+        print("  Right Joystick Button: Faster")
         print("  A: Brake")
         print("  Y: Shake")
         print("  Start: Position Mode")
@@ -165,10 +164,8 @@ class DriveBot(Module):
             self.normalScale = 0.2
             self.fastScale = 0.4
             self.slowScale = 0.07
-            self.maxScale = 0.4
             self.normalTurnScale = 0.2
             self.fastTurnScale = 0.3
-            self.maxTurnScale = 0.3
         else:
             # normal speed scale, out of 1:
             self.normalScale = 0.37
@@ -176,14 +173,10 @@ class DriveBot(Module):
             self.fastScale = 1.0
             # speed scale when slow button is pressed:
             self.slowScale = 0.07
-            # speed scale when max speed button is pressed
-            self.maxScale = 1.0
             # normal turning speed scale:
             self.normalTurnScale = 0.25
             # turning speed scale when fast button is pressed
             self.fastTurnScale = 0.34
-            # turning speed scale when max speed button is pressed
-            self.maxTurnScale = 1.0
 
         self.wheelsLocked = False
 
@@ -245,18 +238,14 @@ class DriveBot(Module):
         scale = self.normalScale
         turnScale = self.normalTurnScale
         exponent = self.joystickExponent
-        if self.driverGamepad.getRawButton(Gamepad.RT):  # faster button
+        if self.driverGamepad.getRawButton(Gamepad.RJ):  # faster button
             scale = self.fastScale
             turnScale = self.fastTurnScale
             exponent = self.fastJoystickExponent
-        if self.driverGamepad.getRawButton(Gamepad.LT):  # slower button
+        if self.driverGamepad.getRawButton(Gamepad.LJ):  # slower button
             scale = self.slowScale
             turnScale = self.slowScale
             exponent = self.slowJoystickExponent
-        if self.driverGamepad.getRawButton(Gamepad.LJ):  # max speed button
-            scale = self.maxScale
-            turnScale = self.maxTurnScale
-            exponent = self.fastJoystickExponent
         turn = self._joystickPower(-self.driverGamepad.getRX(),
                                    exponent) * turnScale
         magnitude = self._joystickPower(self.driverGamepad.getLMagnitude(),
