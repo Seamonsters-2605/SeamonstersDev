@@ -28,8 +28,11 @@ class Shooter (Module):
         if dashboard.getSwitch("Fast shooting", False):
             print("Fast shooting!!")
             voltage = .9
-            self.ballControl.getFlywheels().speedVoltage = voltage
-            self.ballControl.getFlywheels().speedSpeed = 27632 * voltage
+        else:
+            print("Slow shooting")
+            voltage = .5
+        self.ballControl.getFlywheels().speedVoltage = voltage
+        self.ballControl.getFlywheels().speedSpeed = 27632 * voltage
 
     def teleopPeriodic(self):
         if self.gamepad.getRawButton(Gamepad.DOWN):
