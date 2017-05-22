@@ -23,10 +23,6 @@ class DriveBot(Module):
     def robotInit(self):
         ### CONSTANTS ###
 
-        self.joystickExponent = 2
-        self.fastJoystickExponent = .5
-        self.slowJoystickExponent = 4
-
         # if the joystick direction is within this number of radians on either
         # side of straight up, left, down, or right, it will be rounded
         self.driveDirectionDeadZone = math.radians(10)
@@ -100,7 +96,7 @@ class DriveBot(Module):
         self.turnAlignLog = LogState("Turn align")
         self.targetWidthLog = LogState("Target width")
 
-        self.currentDistance = 0
+        self.currentSpeed = 0
 
         if dashboard.getSwitch("Drive voltage mode", False):
             self.holoDrive.setDriveMode(DriveInterface.DriveMode.VOLTAGE)
@@ -124,13 +120,14 @@ class DriveBot(Module):
         targetWidth = float(targetDimensions[0]) / float(vision.Vision.WIDTH)
         self.targetWidthLog.update("{0:.5f}".format(targetWidth))
         distance = 0.55 - targetWidth
-        self.currentDistance += (distance - self.currentDistance) / 3
-        driveSpeed = self.currentDistance * abs(self.currentDistance) * 1.5
+        driveSpeed = distance * abs(distance) * 1.5
 
         if driveSpeed > 0.25:
             driveSpeed = 0.25
         if driveSpeed < -0.2:
             driveSpeed = -0.2
+
+        self.currentSpeed += (driveSpeed - self.currentSpeed) / 3
 
         self.filterDrive.drive(driveSpeed, math.pi/2, -turnAmount)
 
@@ -160,12 +157,16 @@ class DriveBot(Module):
         else:
             self.holoDrive.setDriveMode(DriveInterface.DriveMode.POSITION)
 
-        if dashboard.getSwitch("Slow driving", False):
-            self.normalScale = 0.2
-            self.fastScale = 0.4
+        if dashboard.getSwitch("Slow driving", True):
+            self.normalScale = 0.15
+            self.fastScale = 0.15
             self.slowScale = 0.07
-            self.normalTurnScale = 0.2
-            self.fastTurnScale = 0.3
+            self.normalTurnScale = 0.15
+            self.fastTurnScale = 0.2
+
+            self.joystickExponent = 2
+            self.fastJoystickExponent = 2
+            self.slowJoystickExponent = 4
         else:
             # normal speed scale, out of 1:
             self.normalScale = 0.37
@@ -177,6 +178,10 @@ class DriveBot(Module):
             self.normalTurnScale = 0.25
             # turning speed scale when fast button is pressed
             self.fastTurnScale = 0.34
+
+            self.joystickExponent = 2
+            self.fastJoystickExponent = .5
+            self.slowJoystickExponent = 4
 
         self.wheelsLocked = False
 
