@@ -4,8 +4,6 @@ import wpilib
 import ctre
 from seamonsters.wpilib_sim import simulate
 from seamonsters.modularRobot import Module
-from seamonsters.gamepad import Gamepad
-import seamonsters.gamepad
 from seamonsters.drive import DriveInterface
 from seamonsters.drive import AccelerationFilterDrive
 from seamonsters.drive import FieldOrientedDrive
@@ -45,7 +43,7 @@ class DriveBot(Module):
 
         ### END OF CONSTANTS ###
 
-        self.driverGamepad = seamonsters.gamepad.globalGamepad(port=0)
+        self.driverJoystick = wpilib.Joystick(0)
 
         fl = ctre.CANTalon(2)
         fr = ctre.CANTalon(1)
@@ -157,31 +155,8 @@ class DriveBot(Module):
         else:
             self.holoDrive.setDriveMode(DriveInterface.DriveMode.POSITION)
 
-        if dashboard.getSwitch("Slow driving", True):
-            self.normalScale = 0.15
-            self.fastScale = 0.15
-            self.slowScale = 0.07
-            self.normalTurnScale = 0.15
-            self.fastTurnScale = 0.2
-
-            self.joystickExponent = 2
-            self.fastJoystickExponent = 2
-            self.slowJoystickExponent = 4
-        else:
-            # normal speed scale, out of 1:
-            self.normalScale = 0.37
-            # speed scale when fast button is pressed:
-            self.fastScale = 1.0
-            # speed scale when slow button is pressed:
-            self.slowScale = 0.07
-            # normal turning speed scale:
-            self.normalTurnScale = 0.25
-            # turning speed scale when fast button is pressed
-            self.fastTurnScale = 0.34
-
-            self.joystickExponent = 2
-            self.fastJoystickExponent = .5
-            self.slowJoystickExponent = 4
+        self.turnScale = 0.3
+        self.joystickExponent = 2
 
         self.wheelsLocked = False
 
@@ -209,15 +184,14 @@ class DriveBot(Module):
             self.speedLog.update(speedLogText)
 
         # change drive mode with back and start
-        if self.driverGamepad.getRawButton(Gamepad.BACK):
+        if self.driverJoystick.getRawButton(6):
             self.drive.setDriveMode(DriveInterface.DriveMode.VOLTAGE)
-        elif self.driverGamepad.getRawButton(Gamepad.START):
+        elif self.driverJoystick.getRawButton(7):
             self.drive.setDriveMode(DriveInterface.DriveMode.POSITION)
         self.driveModeLog.update(self._driveModeName(self.drive.getDriveMode()))
 
-        if self.driverGamepad.getRawButton(Gamepad.A) and \
-                        self.driverGamepad.getLMagnitude() == 0 and \
-                        self.driverGamepad.getRX() == 0:
+        if self.driverJoystick.getRawButton(1) and \
+                        self.driverJoystick.getMagnitude() == 0:
             # lock wheels and don't allow driving
             if not self.wheelsLocked:
                 print("Locking wheels")
@@ -231,8 +205,7 @@ class DriveBot(Module):
         else:
             self.wheelsLocked = False
 
-        if self.driverGamepad.getRawButton(Gamepad.RB) \
-                and self.driverGamepad.getRawButton(Gamepad.LB):
+        if self.driverJoystick.getRawButton(11):
             print("Zero field oriented.")
             self.fieldDrive.zero()
         if self.drive is self.fieldDrive:
@@ -240,26 +213,18 @@ class DriveBot(Module):
         else:
             self.fieldDriveLog.update("Disabled")
 
-        scale = self.normalScale
-        turnScale = self.normalTurnScale
+        scale = (1 - self.driverJoystick.getZ()) / 2
+        turnScale = scale * self.turnScale
         exponent = self.joystickExponent
-        if self.driverGamepad.getRawButton(Gamepad.RJ):  # faster button
-            scale = self.fastScale
-            turnScale = self.fastTurnScale
-            exponent = self.fastJoystickExponent
-        if self.driverGamepad.getRawButton(Gamepad.LJ):  # slower button
-            scale = self.slowScale
-            turnScale = self.slowScale
-            exponent = self.slowJoystickExponent
-        turn = self._joystickPower(-self.driverGamepad.getRX(),
+        turn = self._joystickPower(-self.driverJoystick.getX(),
                                    exponent) * turnScale
-        magnitude = self._joystickPower(self.driverGamepad.getLMagnitude(),
+        magnitude = -self._joystickPower(self.driverJoystick.getY(),
                                         exponent) * scale
-        direction = self.driverGamepad.getLDirection()
+        direction = math.pi / 2
 
         accelFilter = True
 
-        if self.driverGamepad.getRawButton(Gamepad.Y):
+        if self.driverJoystick.getRawButton(8):
             magnitude = 1
             if self.count % 10 >= 5:
                 direction = math.pi

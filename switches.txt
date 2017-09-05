@@ -2,5 +2,4 @@
 -Drive voltage mode
 -Encoder logging
 +Flywheel voltage mode
--Slow driving
 -Fast shooting

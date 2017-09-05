@@ -20,11 +20,11 @@ class CompetitionBot2017(Module):
         self.driveBot = DriveBot(initSuper=False)
         self.addModule(self.driveBot)
 
-        self.climberBot = Climber(initSuper=False)
-        self.addModule(self.climberBot)
-
-        self.shooterBot = Shooter(initSuper=False)
-        self.addModule(self.shooterBot)
+        # self.climberBot = Climber(initSuper=False)
+        # self.addModule(self.climberBot)
+        #
+        # self.shooterBot = Shooter(initSuper=False)
+        # self.addModule(self.shooterBot)
 
         self.commandTable = NetworkTables.getTable('commands')
 
@@ -36,8 +36,8 @@ class CompetitionBot2017(Module):
             robot.setParent(None)
 
     def robotInit(self):
-        self.ballControl = leviathan.shooter.BallControl()
-        self.shooterBot.setBallControl(self.ballControl)
+        #self.ballControl = leviathan.shooter.BallControl()
+        #self.shooterBot.setBallControl(self.ballControl)
         super().robotInit()
 
 
