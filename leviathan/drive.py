@@ -33,13 +33,15 @@ class DriveBot(Module):
         # speed at which fast PID's should be used:
         fastPIDScale = 0.09
         # PIDF values for slow driving:
-        slowPID = (30.0, 0.0009, 3.0, 0.0)
+        slowPID = (10.0, 0.0009, 3.0, 0.0)
         # speed at which slow PID's should be used:
         slowPIDScale = 0.01
 
         pidLookBackRange = 10
 
         self.maxVelocity = 650
+
+        self.joystickDeadzone = .1
 
         ### END OF CONSTANTS ###
 
@@ -190,8 +192,15 @@ class DriveBot(Module):
             self.drive.setDriveMode(DriveInterface.DriveMode.POSITION)
         self.driveModeLog.update(self._driveModeName(self.drive.getDriveMode()))
 
+        joystickX = self.driverJoystick.getX()
+        joystickY = self.driverJoystick.getY()
+        if abs(joystickX) < self.joystickDeadzone:
+            joystickX = 0
+        if abs(joystickY) < self.joystickDeadzone:
+            joystickY = 0
+
         if self.driverJoystick.getRawButton(1) and \
-                        self.driverJoystick.getMagnitude() == 0:
+                        (joystickX + joystickY) == 0:
             # lock wheels and don't allow driving
             if not self.wheelsLocked:
                 print("Locking wheels")
@@ -216,9 +225,10 @@ class DriveBot(Module):
         scale = (1 - self.driverJoystick.getZ()) / 2
         turnScale = scale * self.turnScale
         exponent = self.joystickExponent
-        turn = self._joystickPower(-self.driverJoystick.getX(),
+
+        turn = self._joystickPower(-joystickX,
                                    exponent) * turnScale
-        magnitude = -self._joystickPower(self.driverJoystick.getY(),
+        magnitude = -self._joystickPower(joystickY,
                                         exponent) * scale
         direction = math.pi / 2
 
