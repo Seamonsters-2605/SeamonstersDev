@@ -91,6 +91,8 @@ class DriveBot(Module):
         if self.pdp.getVoltage() < 12:
             print("Battery Level below 12 volts!!!")
 
+        self.controlMode = "Strafe"
+
     def autonomousInit(self):
         self.vision = vision.Vision()
         self.turnAlignLog = LogState("Turn align")
@@ -185,12 +187,18 @@ class DriveBot(Module):
                 speedLogText += str(talon.getEncVelocity()) + " "
             self.speedLog.update(speedLogText)
 
-        # change drive mode with back and start
+        # change drive mode with left side buttons
         if self.driverJoystick.getRawButton(6):
             self.drive.setDriveMode(DriveInterface.DriveMode.VOLTAGE)
         elif self.driverJoystick.getRawButton(7):
             self.drive.setDriveMode(DriveInterface.DriveMode.POSITION)
         self.driveModeLog.update(self._driveModeName(self.drive.getDriveMode()))
+
+        # change control mode with right side buttons
+        if self.driverJoystick.getRawButton(11):
+            self.controlMode = "Tank"
+        elif self.driverJoystick.getRawButton(10):
+            self.controlMode = "Strafe"
 
         joystickX = self.driverJoystick.getX()
         joystickY = self.driverJoystick.getY()
@@ -226,11 +234,37 @@ class DriveBot(Module):
         turnScale = scale * self.turnScale
         exponent = self.joystickExponent
 
-        turn = self._joystickPower(-joystickX,
-                                   exponent) * turnScale
-        magnitude = -self._joystickPower(joystickY,
-                                        exponent) * scale
-        direction = math.pi / 2
+        if self.controlMode == "Tank":
+            turn = self._joystickPower(-joystickX,
+                                       exponent) * turnScale
+            magnitude = -self._joystickPower(joystickY,
+                                            exponent) * scale
+            direction = math.pi / 2
+
+            # I think this adds strafing onto existing joystick movt, but untested
+            if self.driverJoystick.getRawButton(4):
+                magnitude = ((magnitude ** 2) + (scale ** 2)) ** .5
+                direction += math.atan(scale / magnitude)
+            elif self.driverJoystick.getRawButton(5):
+                magnitude = ((magnitude ** 2) + (scale ** 2)) ** .5
+                direction -= math.atan(scale / magnitude)
+
+
+        else: # self.controlMode == "Strafe", UNTESTED
+            if self.driverJoystick.getRawButton(4):
+                turn = -turnScale
+            elif self.driverJoystick.getRawButton(5):
+                turn = turnScale
+            else:
+                turn = 0
+
+            magnitude = abs(joystickX) + abs(joystickY)
+            if magnitude > 1:
+                magnitude = 1
+            magnitude = self._joystickPower(magnitude, exponent) * scale
+
+            direction = self.driverJoystick.getDirectionRadians() # may need modification (+ pi/2)
+
 
         accelFilter = True
 
