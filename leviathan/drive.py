@@ -41,7 +41,8 @@ class DriveBot(Module):
 
         self.maxVelocity = 650
 
-        self.joystickDeadzone = .1
+        self.joystickXDeadzone = .1
+        self.joystickYDeadzone = .1
 
         ### END OF CONSTANTS ###
 
@@ -187,24 +188,29 @@ class DriveBot(Module):
                 speedLogText += str(talon.getEncVelocity()) + " "
             self.speedLog.update(speedLogText)
 
-        # change drive mode with left side buttons
-        if self.driverJoystick.getRawButton(6):
+        # change drive mode with T1/T2
+        if self.driverJoystick.getRawButton(5):
             self.drive.setDriveMode(DriveInterface.DriveMode.VOLTAGE)
-        elif self.driverJoystick.getRawButton(7):
+        elif self.driverJoystick.getRawButton(6):
             self.drive.setDriveMode(DriveInterface.DriveMode.POSITION)
         self.driveModeLog.update(self._driveModeName(self.drive.getDriveMode()))
 
-        # change control mode with right side buttons
-        if self.driverJoystick.getRawButton(11):
+        # change control mode with mode switch
+        if self.driverJoystick.getRawButton(13):
             self.controlMode = "Tank"
-        elif self.driverJoystick.getRawButton(10):
+            self.joystickXDeadzone = .2
+        elif self.driverJoystick.getRawButton(14):
             self.controlMode = "Strafe"
+            self.joystickXDeadzone = .2
+        else: # mode switch is OFF
+            self.controlMode = "Tank"
+            self.joystickXDeadzone = .2
 
         joystickX = self.driverJoystick.getX()
         joystickY = self.driverJoystick.getY()
-        if abs(joystickX) < self.joystickDeadzone:
+        if abs(joystickX) < self.joystickXDeadzone:
             joystickX = 0
-        if abs(joystickY) < self.joystickDeadzone:
+        if abs(joystickY) < self.joystickYDeadzone:
             joystickY = 0
 
         if self.driverJoystick.getRawButton(1) and \
@@ -231,7 +237,7 @@ class DriveBot(Module):
             self.fieldDriveLog.update("Disabled")
 
         scale = (1 - self.driverJoystick.getZ()) / 2
-        turnScale = scale * self.turnScale
+        turnScale = (self.driverJoystick.getRawAxis(4) - 1) / -2 * self.turnScale
         exponent = self.joystickExponent
 
         if self.controlMode == "Tank":
@@ -242,19 +248,19 @@ class DriveBot(Module):
             direction = math.pi / 2
 
             # I think this adds strafing onto existing joystick movt, but untested
-            if self.driverJoystick.getRawButton(4):
+            """if self.driverJoystick.getRawButton(4):
                 magnitude = ((magnitude ** 2) + (scale ** 2)) ** .5
                 direction += math.atan(scale / magnitude)
             elif self.driverJoystick.getRawButton(5):
                 magnitude = ((magnitude ** 2) + (scale ** 2)) ** .5
-                direction -= math.atan(scale / magnitude)
+                direction -= math.atan(scale / magnitude)"""
 
 
-        else: # self.controlMode == "Strafe", UNTESTED
-            if self.driverJoystick.getRawButton(4):
-                turn = -turnScale
-            elif self.driverJoystick.getRawButton(5):
+        else: # self.controlMode == "Strafe"
+            if self.driverJoystick.getThrottle() < -.1:
                 turn = turnScale
+            elif self.driverJoystick.getThrottle() > .1:
+                turn = -turnScale
             else:
                 turn = 0
 
@@ -263,12 +269,13 @@ class DriveBot(Module):
                 magnitude = 1
             magnitude = self._joystickPower(magnitude, exponent) * scale
 
-            direction = self.driverJoystick.getDirectionRadians() # may need modification (+ pi/2)
+            direction = -(self.driverJoystick.getDirectionRadians() - math.pi) - (math.pi / 2)
 
 
         accelFilter = True
 
-        if self.driverJoystick.getRawButton(8):
+        # Shake
+        if self.driverJoystick.getRawButton(2):
             magnitude = 1
             if self.count % 10 >= 5:
                 direction = math.pi
