@@ -188,6 +188,14 @@ class DriveBot(Module):
                 speedLogText += str(talon.getEncVelocity()) + " "
             self.speedLog.update(speedLogText)
 
+        # toggle normal drive and field-oriented with T5/T6
+        if self.driverJoystick.getRawButton(9):
+            self.drive = self.filterDrive
+            print("In FilterDrive")
+        elif self.driverJoystick.getRawButton(10):
+            self.drive = self.fieldDrive
+            print("In FieldDrive")
+
         # change drive mode with T1/T2
         if self.driverJoystick.getRawButton(5):
             self.drive.setDriveMode(DriveInterface.DriveMode.VOLTAGE)
@@ -205,6 +213,10 @@ class DriveBot(Module):
         else: # mode switch is OFF
             self.controlMode = "Tank"
             self.joystickXDeadzone = .2
+
+        # Tank mode isn't functional when in field-oriented mode
+        if self.controlMode == "Tank" and isinstance(self.drive, FieldOrientedDrive):
+            self.controlMode = "Strafe"
 
         joystickX = self.driverJoystick.getX()
         joystickY = self.driverJoystick.getY()
@@ -228,8 +240,8 @@ class DriveBot(Module):
         else:
             self.wheelsLocked = False
 
-        if self.driverJoystick.getRawButton(11):
-            print("Zero field oriented.")
+        if self.driverJoystick.getRawButton(2):
+            print("Zero field oriented")
             self.fieldDrive.zero()
         if self.drive is self.fieldDrive:
             self.fieldDriveLog.update("Enabled")
@@ -275,7 +287,7 @@ class DriveBot(Module):
         accelFilter = True
 
         # Shake
-        if self.driverJoystick.getRawButton(2):
+        if self.driverJoystick.getRawButton(4):
             magnitude = 1
             if self.count % 10 >= 5:
                 direction = math.pi
