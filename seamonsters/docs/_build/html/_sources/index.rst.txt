@@ -24,7 +24,6 @@ Modules:
    :maxdepth: 2
 
    commands
-   dashboard
    drive
    gamepad
    holonomicDrive
@@ -32,7 +31,6 @@ Modules:
    logging
    modularRobot
    motorControl
-   nav6
    path
    pdp
    swerveDrive
