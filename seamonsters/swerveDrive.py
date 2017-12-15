@@ -100,6 +100,9 @@ class WheelController:
         """
         pass
 
+    def zeroRotation(self):
+        pass
+
 
 class TestWheelController(WheelController):
     """
@@ -136,12 +139,15 @@ class TalonWheelController(WheelController):
         self.driveController = driveController
         
         self.rotateTalon = rotateTalon
-        self.rotateTalonInitialPosition = rotateTalon.getPosition()
+        self.zeroRotation()
         self.rotateTalonEncoderTicks = abs(rotateTalonEncoderTicks)
         self.reverseRotateTalon = rotateTalonEncoderTicks < 0
         rotateTalon.changeControlMode(ctre.CANTalon.ControlMode.Position)
         
         self.driveMode = DriveInterface.DriveMode.VOLTAGE
+
+    def zeroRotation(self):
+        self.rotateTalonInitialPosition = self.rotateTalon.getPosition()
 
     def getCurrentRotation(self):
         ticks = self.rotateTalon.getPosition()
@@ -219,6 +225,10 @@ class SwerveDrive(DriveInterface):
             wheelController = TalonWheelController(multiMode, rotateTalon,
                     rotateTalonEncoderTicks)
         self.wheels.append( WheelState(location, wheelController) )
+
+    def zeroRotations(self):
+        for wheelState in self.wheels:
+            wheelState.controller.zeroRotation()
     
     def drive(self, magnitude, direction, turn):
         mode = self.driveMode

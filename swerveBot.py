@@ -20,16 +20,15 @@ class ThisIsARobot(seamonsters.GeneratorBot):
         self.frDrive = ctre.CANTalon(15)
 
         self.drive = seamonsters.SwerveDrive()
-        # -213,2795
-        self.drive.addWheel(1.0, -1.0, self.flDrive, flRotate, 3000)
-        # -133,2966
-        self.drive.addWheel(1.0, 1.0, self.frDrive, frRotate, 3000)
+        self.drive.addWheel(1.0, -1.0, self.flDrive, flRotate, 3106)
+        self.drive.addWheel(1.0, 1.0, self.frDrive, frRotate, 3106)
 
         self.joy = wpilib.Joystick(0)
 
     def teleop(self):
         print("initialize")
         self.drive.setDriveMode(seamonsters.DriveInterface.DriveMode.VOLTAGE)
+        self.drive.zeroRotations()
         yield
         while True:
             magnitude = (self.joy.getMagnitude() ** 2) * .3
