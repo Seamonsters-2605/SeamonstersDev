@@ -1,3 +1,4 @@
+import math
 import wpilib
 import ctre
 import seamonsters
@@ -20,7 +21,7 @@ class ThisIsARobot(seamonsters.GeneratorBot):
 
         self.drive = seamonsters.SwerveDrive()
         # -213,2795
-        self.drive.addWheel(-1.0, 1.0, self.flDrive, flRotate, 3000)
+        self.drive.addWheel(1.0, -1.0, self.flDrive, flRotate, 3000)
         # -133,2966
         self.drive.addWheel(1.0, 1.0, self.frDrive, frRotate, 3000)
 
@@ -31,12 +32,17 @@ class ThisIsARobot(seamonsters.GeneratorBot):
         self.drive.setDriveMode(seamonsters.DriveInterface.DriveMode.VOLTAGE)
         yield
         while True:
-            magnitude = self.joy.getMagnitude() * .5
+            magnitude = (self.joy.getMagnitude() ** 2) * .3
             direction = self.joy.getDirectionRadians()
+            turn = 0
+            if self.joy.getRawButton(4):
+                turn = 0.2
+            elif self.joy.getRawButton(5):
+                turn = -0.2
             if magnitude < .1:
-                self.drive.drive(0,0,0)
-            else:
-                self.drive.drive(magnitude, direction, 0)
+                magnitude = 0
+                direction = 0
+            self.drive.drive(magnitude, direction, turn)
             yield
 
 
